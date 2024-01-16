@@ -100,32 +100,10 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			return
 		}
 
-		var body VehicleJSON
-		if err := json.Unmarshal(bytes, &body); err != nil {
+		var vehicle internal.Vehicle
+		if err := json.Unmarshal(bytes, &vehicle); err != nil {
 			response.Text(w, http.StatusBadRequest, "invalid body")
 			return
-		}
-
-		// Desearlizo el body en un objeto de tipo Vehicle
-		vehicle := internal.Vehicle{
-			Id: body.ID,
-			VehicleAttributes: internal.VehicleAttributes{
-				Brand:           body.Brand,
-				Model:           body.Model,
-				Registration:    body.Registration,
-				Color:           body.Color,
-				FabricationYear: body.FabricationYear,
-				Capacity:        body.Capacity,
-				MaxSpeed:        body.MaxSpeed,
-				FuelType:        body.FuelType,
-				Transmission:    body.Transmission,
-				Weight:          body.Weight,
-				Dimensions: internal.Dimensions{
-					Height: body.Height,
-					Length: body.Length,
-					Width:  body.Width,
-				},
-			},
 		}
 
 		if err := h.sv.Create(vehicle); err != nil {
