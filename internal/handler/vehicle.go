@@ -2,6 +2,9 @@ package handler
 
 import (
 	"app/internal"
+	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 
 	"github.com/bootcamp-go/web/response"
@@ -75,4 +78,96 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 			"data":    data,
 		})
 	}
+}
+
+func (h *VehicleDefault) Create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+		}
+
+		var bodyMap map[string]any
+		if err := json.Unmarshal(bytes, &bodyMap); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+			return
+		}
+
+		if err := validateIfKeysExist(bodyMap, "id", "brand", "model", "registration", "year", "color", "max_speed",
+			"fuel_type", "transmission", "passengers", "height", "width", "weight"); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body. Keys are missing")
+			return
+		}
+
+		var body VehicleJSON
+		if err := json.Unmarshal(bytes, &body); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+			return
+		}
+
+		// Desearlizo el body en un objeto de tipo Vehicle
+		vehicle := internal.Vehicle{
+			Id: body.ID,
+			VehicleAttributes: internal.VehicleAttributes{
+				Brand:           body.Brand,
+				Model:           body.Model,
+				Registration:    body.Registration,
+				Color:           body.Color,
+				FabricationYear: body.FabricationYear,
+				Capacity:        body.Capacity,
+				MaxSpeed:        body.MaxSpeed,
+				FuelType:        body.FuelType,
+				Transmission:    body.Transmission,
+				Weight:          body.Weight,
+				Dimensions: internal.Dimensions{
+					Height: body.Height,
+					Length: body.Length,
+					Width:  body.Width,
+				},
+			},
+		}
+
+		if err := h.sv.Create(vehicle); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrInvalidBody):
+				response.Text(w, http.StatusBadRequest, err.Error())
+			case errors.Is(err, internal.ErrCarAlreadyExists):
+				response.Text(w, http.StatusConflict, err.Error())
+			}
+			return
+		}
+
+		data := VehicleJSON{
+			ID:              vehicle.Id,
+			Brand:           vehicle.Brand,
+			Model:           vehicle.Model,
+			Registration:    vehicle.Registration,
+			Color:           vehicle.Color,
+			FabricationYear: vehicle.FabricationYear,
+			Capacity:        vehicle.Capacity,
+			MaxSpeed:        vehicle.MaxSpeed,
+			FuelType:        vehicle.FuelType,
+			Transmission:    vehicle.Transmission,
+			Weight:          vehicle.Weight,
+			Height:          vehicle.Height,
+			Length:          vehicle.Length,
+			Width:           vehicle.Width,
+		}
+
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "Vehicle created successfully",
+			"data":    data,
+		})
+
+	}
+}
+
+func validateIfKeysExist(mp map[string]any, keys ...string) error {
+	for _, key := range keys {
+		if _, ok := mp[key]; !ok {
+			return internal.ErrInvalidBody
+		}
+	}
+	return nil
 }

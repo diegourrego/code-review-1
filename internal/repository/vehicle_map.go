@@ -29,3 +29,23 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 
 	return
 }
+
+func (r *VehicleMap) FindByID(vehicleId int) (exist bool) {
+	_, ok := r.db[vehicleId]
+	if !ok {
+		return false
+	}
+	return true
+
+}
+
+func (r *VehicleMap) Create(newVehicle internal.Vehicle) error {
+	carExists := r.FindByID(newVehicle.Id)
+	if carExists {
+		return internal.ErrCarAlreadyExists
+	}
+
+	r.db[newVehicle.Id] = newVehicle
+
+	return nil
+}

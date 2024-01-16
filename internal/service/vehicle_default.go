@@ -18,3 +18,11 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindAll()
 	return
 }
+
+func (s *VehicleDefault) Create(newVehicle internal.Vehicle) error {
+	if err := s.rp.Create(newVehicle); err != nil {
+		return err
+	}
+
+	return nil
+}
