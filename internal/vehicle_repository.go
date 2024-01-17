@@ -36,4 +36,5 @@ type VehicleRepository interface {
 	AverageBrandCapacity(brand string) (float64, error)
 	// FindVehiclesByDimensions finds vehicules based on a minimal and maximum length and width - requirement 12
 	FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]Vehicle, err error)
+	FindVehiclesByWeightRate(minWeight, maxWeight float64) (v map[int]Vehicle, err error)
 }

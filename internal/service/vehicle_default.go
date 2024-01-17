@@ -112,3 +112,11 @@ func (s *VehicleDefault) FindVehiclesByDimensions(minLength, maxLength, minWidth
 	}
 	return vehiclesFound, nil
 }
+
+func (s *VehicleDefault) FindVehiclesByWeightRate(minWeight, maxWeight float64) (v map[int]internal.Vehicle, err error) {
+	vehiclesFounded, err := s.rp.FindVehiclesByWeightRate(minWeight, maxWeight)
+	if err != nil {
+		return nil, err
+	}
+	return vehiclesFounded, nil
+}

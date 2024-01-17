@@ -445,6 +445,37 @@ func (h *VehicleDefault) FindVehiclesByDimension() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) FindVehiclesByWeightRate() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		minWeightStr := r.URL.Query().Get("min")
+		maxWeightStr := r.URL.Query().Get("max")
+
+		minWeight, err := strconv.ParseFloat(minWeightStr, 64)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid min value data, it must be a float64 value")
+			return
+		}
+
+		maxWeight, err := strconv.ParseFloat(maxWeightStr, 64)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid max value data, it must be a float64 value")
+			return
+		}
+
+		vehiclesFounded, err := h.sv.FindVehiclesByWeightRate(minWeight, maxWeight)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Vehicles founded successfully!",
+			"data":    vehiclesFounded,
+		})
+
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {

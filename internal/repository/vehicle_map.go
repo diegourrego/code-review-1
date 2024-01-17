@@ -223,3 +223,19 @@ func (r *VehicleMap) FindVehiclesByDimensions(minLength, maxLength, minWidth, ma
 
 	return vehicles, nil
 }
+
+func (r *VehicleMap) FindVehiclesByWeightRate(minWeight, maxWeight float64) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+
+	for _, vehicle := range r.db {
+		if vehicle.Weight >= minWeight && vehicle.Weight <= maxWeight {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}
