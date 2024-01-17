@@ -322,6 +322,26 @@ func (h *VehicleDefault) FindVehiclesByFuelType() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) Delete() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid ID format. ID must be an int number.")
+			return
+		}
+
+		if err := h.sv.Delete(id); err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusNoContent, map[string]any{
+			"message": "vehicle deleted successfully",
+		})
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {

@@ -150,3 +150,12 @@ func (r *VehicleMap) FindVehiclesByFuelType(fuelType string) (v map[int]internal
 
 	return vehicles, nil
 }
+
+func (r *VehicleMap) Delete(vehicleID int) error {
+	exist := r.FindByID(vehicleID)
+	if !exist {
+		return internal.ErrVehicleNotFounded
+	}
+	delete(r.db, vehicleID)
+	return nil
+}

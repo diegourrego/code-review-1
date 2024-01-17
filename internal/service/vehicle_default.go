@@ -73,3 +73,10 @@ func (s *VehicleDefault) FindVehiclesByFuelType(fuelType string) (v map[int]inte
 	}
 	return vehiculesFounded, nil
 }
+
+func (s *VehicleDefault) Delete(vehicleID int) error {
+	if err := s.rp.Delete(vehicleID); err != nil {
+		return err
+	}
+	return nil
+}
