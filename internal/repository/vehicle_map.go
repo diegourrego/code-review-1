@@ -210,8 +210,17 @@ func (r *VehicleMap) AverageBrandCapacity(brand string) (float64, error) {
 func (r *VehicleMap) FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	vehicles := make(map[int]internal.Vehicle)
 
+	// * Should be
+	//for _, vehicle := range r.db {
+	//	if vehicle.Length >= minLength && vehicle.Length <= maxLength &&
+	//		vehicle.Width >= minWidth && vehicle.Width <= maxWidth {
+	//		vehicles[vehicle.Id] = vehicle
+	//	}
+	//}
+
+	// * Which I think is what the problem refers to.
 	for _, vehicle := range r.db {
-		if vehicle.Length >= minLength && vehicle.Length <= maxLength &&
+		if vehicle.Height >= minLength && vehicle.Height <= maxLength &&
 			vehicle.Width >= minWidth && vehicle.Width <= maxWidth {
 			vehicles[vehicle.Id] = vehicle
 		}
