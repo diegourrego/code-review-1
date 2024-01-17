@@ -30,4 +30,6 @@ type VehicleRepository interface {
 	Delete(vehicleID int) error
 	// FindVehiculesByTransmissionType finds vehicles with a specific transmission type - requirement 9
 	FindVehiculesByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
+	// UpdateFuelType updates a vehicle fuel type - requirement 10
+	UpdateFuelType(vehicleID int, newFuelType string) (Vehicle, error)
 }

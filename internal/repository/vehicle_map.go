@@ -174,3 +174,17 @@ func (r *VehicleMap) FindVehiculesByTransmissionType(transmissionType string) (v
 
 	return vehicles, nil
 }
+
+func (r *VehicleMap) UpdateFuelType(vehicleID int, newFuelType string) (internal.Vehicle, error) {
+	exist := r.FindByID(vehicleID)
+	if !exist {
+		return internal.Vehicle{}, internal.ErrVehicleNotFounded
+	}
+
+	vehicle := r.db[vehicleID]
+	vehicle.FuelType = newFuelType
+
+	r.db[vehicleID] = vehicle
+
+	return vehicle, nil
+}

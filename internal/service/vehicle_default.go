@@ -88,3 +88,11 @@ func (s *VehicleDefault) FindVehiculesByTransmissionType(transmissionType string
 	}
 	return vehiclesFound, nil
 }
+
+func (s *VehicleDefault) UpdateFuelType(vehicleID int, newFuelType string) (internal.Vehicle, error) {
+	vehicleUpdated, err := s.rp.UpdateFuelType(vehicleID, newFuelType)
+	if err != nil {
+		return internal.Vehicle{}, err
+	}
+	return vehicleUpdated, nil
+}

@@ -359,6 +359,42 @@ func (h *VehicleDefault) FindVehiculesByTransmissionType() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) UpdateFuelType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "id")
+
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid ID format. ID must be an int number.")
+			return
+		}
+
+		var bodyMap map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&bodyMap); err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid body format")
+			return
+		}
+
+		newFuelType, ok := bodyMap["fuel_type"].(string)
+		if !ok {
+			response.Text(w, http.StatusBadRequest, "fuel type must be provided.")
+			return
+		}
+
+		vehicleUpdated, err := h.sv.UpdateFuelType(id, newFuelType)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message":        "fuel type updated successfully in vehicle",
+			"vehicleUpdated": vehicleUpdated,
+		})
+
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {
