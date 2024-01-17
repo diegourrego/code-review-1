@@ -30,6 +30,8 @@ type VehicleService interface {
 	FindVehiculesByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 	// UpdateFuelType updates a vehicle fuel type - requirement 10
 	UpdateFuelType(vehicleID int, newFuelType string) (Vehicle, error)
-	// AverageBrandCapacity calculates the average brand capacity
+	// AverageBrandCapacity calculates the average brand capacity - requirement 11
 	AverageBrandCapacity(brand string) (float64, error)
+	// FindVehiclesByDimensions finds vehicules based on a minimal and maximum length and width - requirement 12
+	FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]Vehicle, err error)
 }

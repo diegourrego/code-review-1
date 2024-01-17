@@ -206,3 +206,20 @@ func (r *VehicleMap) AverageBrandCapacity(brand string) (float64, error) {
 	average /= numberOfVehicles
 	return average, nil
 }
+
+func (r *VehicleMap) FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+
+	for _, vehicle := range r.db {
+		if vehicle.Length >= minLength && vehicle.Length <= maxLength &&
+			vehicle.Width >= minWidth && vehicle.Width <= maxWidth {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}

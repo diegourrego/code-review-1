@@ -83,6 +83,7 @@ func (a *ServerChi) Run() (err error) {
 		rt.Get("/transmission/{type}", hd.FindVehiculesByTransmissionType())
 		rt.Put("/{id}/update_fuel", hd.UpdateFuelType())
 		rt.Get("/average_capacity/brand/{brand}", hd.AverageBrandCapacity())
+		rt.Get("/dimensions", hd.FindVehiclesByDimension())
 	})
 
 	// run server

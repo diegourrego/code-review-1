@@ -104,3 +104,11 @@ func (s *VehicleDefault) AverageBrandCapacity(brand string) (float64, error) {
 	}
 	return averageBrandCapacity, nil
 }
+
+func (s *VehicleDefault) FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+	vehiclesFound, err := s.rp.FindVehiclesByDimensions(minLength, maxLength, minWidth, maxWidth)
+	if err != nil {
+		return nil, err
+	}
+	return vehiclesFound, nil
+}

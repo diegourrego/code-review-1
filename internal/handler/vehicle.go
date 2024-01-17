@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/bootcamp-go/web/response"
 )
@@ -413,6 +414,37 @@ func (h *VehicleDefault) AverageBrandCapacity() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) FindVehiclesByDimension() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		lengthValues := r.URL.Query().Get("length")
+		widthValues := r.URL.Query().Get("width")
+
+		minLengthValue, maxLengthValue, err := parseFloatValues(lengthValues)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		minWidthValue, maxWidthValue, err := parseFloatValues(widthValues)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		vehiclesFounded, err := h.sv.FindVehiclesByDimensions(minLengthValue, maxLengthValue, minWidthValue, maxWidthValue)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Vehicles founded successfully!",
+			"data":    vehiclesFounded,
+		})
+
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {
@@ -420,4 +452,24 @@ func validateIfKeysExist(data map[string]any, keys ...string) error {
 		}
 	}
 	return nil
+}
+
+func parseFloatValues(input string) (float64, float64, error) {
+	values := strings.Split(input, "-")
+	if len(values) != 2 {
+		return 0, 0, errors.New("invalid format. Check the query params and try again")
+	}
+
+	minValue, err := strconv.ParseFloat(values[0], 64)
+	if err != nil {
+		return 0, 0, errors.New("invalid min value data, it must be a float64 value")
+	}
+
+	maxValue, err := strconv.ParseFloat(values[1], 64)
+	if err != nil {
+		return 0, 0, errors.New("invalid max value data, it must be a float64 value")
+	}
+
+	return minValue, maxValue, nil
+
 }
