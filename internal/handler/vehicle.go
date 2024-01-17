@@ -146,7 +146,7 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 	}
 }
 
-func (h *VehicleDefault) ValidateByColorAndYear() http.HandlerFunc {
+func (h *VehicleDefault) FindByColorAndYear() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Obtain color and year
 		color := chi.URLParam(r, "color")
@@ -168,6 +168,37 @@ func (h *VehicleDefault) ValidateByColorAndYear() http.HandlerFunc {
 			"message": "Cars list obtained",
 			"data":    vehiclesFounded,
 		})
+	}
+}
+
+func (h *VehicleDefault) FindByBrandAndYearRate() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+		initialYearStr := chi.URLParam(r, "start_year")
+		finalYearStr := chi.URLParam(r, "end_year")
+		initialYear, err := strconv.Atoi(initialYearStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid year. Year must be a numeric value")
+			return
+		}
+
+		finalYear, err := strconv.Atoi(finalYearStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid year. Year must be a numeric value")
+			return
+		}
+
+		vehiclesFounded, err := h.sv.FindBetweenBrandAndYearRate(brand, initialYear, finalYear)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "cars list founded",
+			"data":    vehiclesFounded,
+		})
+
 	}
 }
 

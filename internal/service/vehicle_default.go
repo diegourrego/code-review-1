@@ -34,3 +34,11 @@ func (s *VehicleDefault) FindByColorAndYear(color string, year int) (map[int]int
 	}
 	return vehicles, nil
 }
+
+func (s *VehicleDefault) FindBetweenBrandAndYearRate(brand string, initialYear int, finalYear int) (map[int]internal.Vehicle, error) {
+	vehicles, err := s.rp.FindBetweenBrandAndYearRate(brand, initialYear, finalYear)
+	if err != nil {
+		return nil, err
+	}
+	return vehicles, nil
+}

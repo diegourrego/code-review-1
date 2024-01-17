@@ -65,3 +65,19 @@ func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]inter
 
 	return vehicles, nil
 }
+
+func (r *VehicleMap) FindBetweenBrandAndYearRate(brand string, initialYear int, finalYear int) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+
+	for _, vehicle := range r.db {
+		if vehicle.Brand == brand && vehicle.FabricationYear >= initialYear && vehicle.FabricationYear <= finalYear {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}
