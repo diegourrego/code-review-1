@@ -18,5 +18,6 @@ type VehicleService interface {
 	FindBetweenBrandAndYearRate(brand string, initialYear int, finalYear int) (map[int]Vehicle, error)
 	// FindVelocityAverageByBrand finds an average of a specific brand - requirement 4
 	FindVelocityAverageByBrand(brand string) (float64, error)
+	// CreateVehicules creates many vehicules - requirement 5
 	CreateVehicules(newVehicles []Vehicle) error
 }
