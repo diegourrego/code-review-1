@@ -49,3 +49,19 @@ func (r *VehicleMap) Create(newVehicle internal.Vehicle) error {
 
 	return nil
 }
+
+func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+
+	for _, vehicle := range r.db {
+		if vehicle.Color == color || vehicle.FabricationYear == year {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}

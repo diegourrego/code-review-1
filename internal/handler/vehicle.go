@@ -4,8 +4,10 @@ import (
 	"app/internal"
 	"encoding/json"
 	"errors"
+	"github.com/go-chi/chi/v5"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/bootcamp-go/web/response"
 )
@@ -100,12 +102,14 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			return
 		}
 
+		// Deserialization of the body
 		var vehicle internal.Vehicle
 		if err := json.Unmarshal(bytes, &vehicle); err != nil {
 			response.Text(w, http.StatusBadRequest, "invalid body")
 			return
 		}
 
+		// Error handling
 		if err := h.sv.Create(vehicle); err != nil {
 			switch {
 			case errors.Is(err, internal.ErrInvalidBody):
@@ -116,6 +120,7 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			return
 		}
 
+		// response
 		data := VehicleJSON{
 			ID:              vehicle.Id,
 			Brand:           vehicle.Brand,
@@ -138,6 +143,31 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			"data":    data,
 		})
 
+	}
+}
+
+func (h *VehicleDefault) ValidateByColorAndYear() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Obtain color and year
+		color := chi.URLParam(r, "color")
+		yearStr := chi.URLParam(r, "year")
+		// Validate year
+		year, err := strconv.Atoi(yearStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "Invalid year. Year must be a numeric value")
+			return
+		}
+
+		vehiclesFounded, err := h.sv.FindByColorAndYear(color, year)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Cars list obtained",
+			"data":    vehiclesFounded,
+		})
 	}
 }
 

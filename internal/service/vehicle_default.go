@@ -26,3 +26,11 @@ func (s *VehicleDefault) Create(newVehicle internal.Vehicle) error {
 
 	return nil
 }
+
+func (s *VehicleDefault) FindByColorAndYear(color string, year int) (map[int]internal.Vehicle, error) {
+	vehicles, err := s.rp.FindByColorAndYear(color, year)
+	if err != nil {
+		return nil, err
+	}
+	return vehicles, nil
+}
