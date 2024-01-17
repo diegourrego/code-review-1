@@ -134,3 +134,19 @@ func (r *VehicleMap) UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (interna
 
 	return vehicle, nil
 }
+
+func (r *VehicleMap) FindVehiclesByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+
+	for _, vehicle := range r.db {
+		if vehicle.FuelType == fuelType {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}

@@ -78,6 +78,7 @@ func (a *ServerChi) Run() (err error) {
 		rt.Get("/average_speed/brand/{brand}", hd.FindVelocityAverageByBrand())
 		rt.Post("/batch", hd.CreateVehicles())
 		rt.Put("/{id}/update_speed", hd.UpdateMaxSpeed())
+		rt.Get("/fuel_type/{type}", hd.FindVehiclesByFuelType())
 	})
 
 	// run server

@@ -22,4 +22,5 @@ type VehicleService interface {
 	CreateVehicules(newVehicles []Vehicle) error
 	// UpdateMaxSpeed update only vehicle max_speed - requirement 6
 	UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (Vehicle, error)
+	FindVehiclesByFuelType(fuelType string) (v map[int]Vehicle, err error)
 }

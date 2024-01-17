@@ -305,6 +305,23 @@ func (h *VehicleDefault) UpdateMaxSpeed() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) FindVehiclesByFuelType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fuelType := chi.URLParam(r, "type")
+
+		vehiclesFounded, err := h.sv.FindVehiclesByFuelType(fuelType)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Vehicles found!",
+			"data":    vehiclesFounded,
+		})
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {

@@ -65,3 +65,11 @@ func (s *VehicleDefault) UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (int
 	}
 	return vehiculeUpdated, nil
 }
+
+func (s *VehicleDefault) FindVehiclesByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
+	vehiculesFounded, err := s.rp.FindVehiclesByFuelType(fuelType)
+	if err != nil {
+		return nil, err
+	}
+	return vehiculesFounded, nil
+}
