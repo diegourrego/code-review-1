@@ -188,3 +188,21 @@ func (r *VehicleMap) UpdateFuelType(vehicleID int, newFuelType string) (internal
 
 	return vehicle, nil
 }
+
+func (r *VehicleMap) AverageBrandCapacity(brand string) (float64, error) {
+	var average float64
+	var numberOfVehicles float64
+
+	for _, vehicle := range r.db {
+		if vehicle.Brand == brand {
+			average += float64(vehicle.Capacity)
+			numberOfVehicles++
+		}
+	}
+
+	if numberOfVehicles == 0 {
+		return 0, internal.ErrVehicleNotFounded
+	}
+	average /= numberOfVehicles
+	return average, nil
+}

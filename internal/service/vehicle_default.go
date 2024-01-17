@@ -96,3 +96,11 @@ func (s *VehicleDefault) UpdateFuelType(vehicleID int, newFuelType string) (inte
 	}
 	return vehicleUpdated, nil
 }
+
+func (s *VehicleDefault) AverageBrandCapacity(brand string) (float64, error) {
+	averageBrandCapacity, err := s.rp.AverageBrandCapacity(brand)
+	if err != nil {
+		return 0, err
+	}
+	return averageBrandCapacity, nil
+}

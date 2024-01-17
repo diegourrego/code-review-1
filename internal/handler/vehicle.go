@@ -395,6 +395,24 @@ func (h *VehicleDefault) UpdateFuelType() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) AverageBrandCapacity() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+
+		averageBrandCapacity, err := h.sv.AverageBrandCapacity(brand)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message":         "Vehicles found successfully!",
+			"brand":           brand,
+			"averageCapacity": averageBrandCapacity,
+		})
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {

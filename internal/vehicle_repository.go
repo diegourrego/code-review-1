@@ -32,4 +32,6 @@ type VehicleRepository interface {
 	FindVehiculesByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 	// UpdateFuelType updates a vehicle fuel type - requirement 10
 	UpdateFuelType(vehicleID int, newFuelType string) (Vehicle, error)
+	// AverageBrandCapacity calculates the average brand capacity
+	AverageBrandCapacity(brand string) (float64, error)
 }
