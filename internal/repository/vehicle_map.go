@@ -159,3 +159,18 @@ func (r *VehicleMap) Delete(vehicleID int) error {
 	delete(r.db, vehicleID)
 	return nil
 }
+
+func (r *VehicleMap) FindVehiculesByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	vehicles := make(map[int]internal.Vehicle)
+	for _, vehicle := range r.db {
+		if vehicle.Transmission == transmissionType {
+			vehicles[vehicle.Id] = vehicle
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, internal.ErrVehicleNotFounded
+	}
+
+	return vehicles, nil
+}

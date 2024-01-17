@@ -342,6 +342,23 @@ func (h *VehicleDefault) Delete() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) FindVehiculesByTransmissionType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		transmissionType := chi.URLParam(r, "type")
+
+		vehiclesFound, err := h.sv.FindVehiculesByTransmissionType(transmissionType)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "vehicles found!",
+			"data":    vehiclesFound,
+		})
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {

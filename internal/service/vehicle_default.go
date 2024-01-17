@@ -80,3 +80,11 @@ func (s *VehicleDefault) Delete(vehicleID int) error {
 	}
 	return nil
 }
+
+func (s *VehicleDefault) FindVehiculesByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	vehiclesFound, err := s.rp.FindVehiculesByTransmissionType(transmissionType)
+	if err != nil {
+		return nil, err
+	}
+	return vehiclesFound, nil
+}
