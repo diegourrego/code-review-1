@@ -42,3 +42,11 @@ func (s *VehicleDefault) FindBetweenBrandAndYearRate(brand string, initialYear i
 	}
 	return vehicles, nil
 }
+
+func (s *VehicleDefault) FindVelocityAverageByBrand(brand string) (float64, error) {
+	brandVelocityAverage, err := s.rp.FindVelocityAverageByBrand(brand)
+	if err != nil {
+		return 0, err
+	}
+	return brandVelocityAverage, nil
+}

@@ -81,3 +81,24 @@ func (r *VehicleMap) FindBetweenBrandAndYearRate(brand string, initialYear int, 
 
 	return vehicles, nil
 }
+
+func (r *VehicleMap) FindVelocityAverageByBrand(brand string) (float64, error) {
+	var average float64
+	var totalCars float64
+
+	for _, vehicle := range r.db {
+		if vehicle.Brand == brand {
+			average += vehicle.MaxSpeed
+			totalCars++
+		}
+	}
+
+	if average == 0.0 {
+		return 0, internal.ErrVehicleNotFounded
+	}
+
+	average /= totalCars
+
+	return average, nil
+
+}

@@ -18,4 +18,6 @@ type VehicleRepository interface {
 	FindByColorAndYear(color string, year int) (map[int]Vehicle, error)
 	// FindBetweenBrandAndYearRate filters cars according a specific brand and year rate - requirement 3
 	FindBetweenBrandAndYearRate(brand string, initialYear int, finalYear int) (map[int]Vehicle, error)
+	// FindVelocityAverageByBrand finds an average of a specific brand - requirement 4
+	FindVelocityAverageByBrand(brand string) (float64, error)
 }

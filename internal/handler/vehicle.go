@@ -202,6 +202,22 @@ func (h *VehicleDefault) FindByBrandAndYearRate() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) FindVelocityAverageByBrand() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+		brandVelocityAverage, err := h.sv.FindVelocityAverageByBrand(brand)
+		if err != nil {
+			response.Text(w, http.StatusNotFound, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message":           "Speed average found",
+			"brandSpeedAverage": brandVelocityAverage,
+		})
+	}
+}
+
 func validateIfKeysExist(mp map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := mp[key]; !ok {
