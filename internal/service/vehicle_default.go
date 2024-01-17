@@ -57,3 +57,11 @@ func (s *VehicleDefault) CreateVehicules(newVehicles []internal.Vehicle) error {
 	}
 	return nil
 }
+
+func (s *VehicleDefault) UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (internal.Vehicle, error) {
+	vehiculeUpdated, err := s.rp.UpdateMaxSpeed(vehicleID, newMaxSpeed)
+	if err != nil {
+		return internal.Vehicle{}, err
+	}
+	return vehiculeUpdated, nil
+}

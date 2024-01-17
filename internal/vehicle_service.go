@@ -20,4 +20,6 @@ type VehicleService interface {
 	FindVelocityAverageByBrand(brand string) (float64, error)
 	// CreateVehicules creates many vehicules - requirement 5
 	CreateVehicules(newVehicles []Vehicle) error
+	// UpdateMaxSpeed update only vehicle max_speed - requirement 6
+	UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (Vehicle, error)
 }

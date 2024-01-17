@@ -120,3 +120,17 @@ func (r *VehicleMap) CreateVehicules(newVehicles []internal.Vehicle) error {
 	return nil
 
 }
+
+func (r *VehicleMap) UpdateMaxSpeed(vehicleID int, newMaxSpeed float64) (internal.Vehicle, error) {
+	exist := r.FindByID(vehicleID)
+	if !exist {
+		return internal.Vehicle{}, internal.ErrVehicleNotFounded
+	}
+
+	vehicle := r.db[vehicleID]
+	vehicle.MaxSpeed = newMaxSpeed
+
+	r.db[vehicleID] = vehicle
+
+	return vehicle, nil
+}

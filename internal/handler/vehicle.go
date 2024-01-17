@@ -256,6 +256,55 @@ func (h *VehicleDefault) CreateVehicles() http.HandlerFunc {
 	}
 }
 
+func (h *VehicleDefault) UpdateMaxSpeed() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		idStr := chi.URLParam(r, "id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid id. Id must be an int number.")
+			return
+		}
+
+		var bodyMap map[string]any
+
+		if err := json.NewDecoder(r.Body).Decode(&bodyMap); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+			return
+		}
+
+		// Con esto me aseguro que venga en la request max_speed
+		if err := validateIfKeysExist(bodyMap, "max_speed"); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid request. max_speed must be provided.")
+			return
+		}
+
+		newMaxSpeed, ok := bodyMap["max_speed"].(float64)
+		if !ok {
+			response.Text(w, http.StatusBadRequest, "Invalid max_speed value")
+			return
+		}
+
+		vehicleUpdated, err := h.sv.UpdateMaxSpeed(id, newMaxSpeed)
+		if err != nil {
+
+			if errors.Is(err, internal.ErrVehicleNotFounded) {
+				response.Text(w, http.StatusNotFound, err.Error())
+				return
+			}
+
+			response.Text(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message":        "max_speed updated successfully",
+			"vehicleUpdated": vehicleUpdated,
+		})
+
+	}
+}
+
 func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
 		if _, ok := data[key]; !ok {
