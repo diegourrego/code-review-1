@@ -19,8 +19,8 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	return
 }
 
-func (s *VehicleDefault) Create(newVehicle internal.Vehicle) error {
-	if err := s.rp.Create(newVehicle); err != nil {
+func (s *VehicleDefault) CreateVehicle(newVehicle internal.Vehicle) error {
+	if err := s.rp.CreateVehicle(newVehicle); err != nil {
 		return err
 	}
 
@@ -49,4 +49,11 @@ func (s *VehicleDefault) FindVelocityAverageByBrand(brand string) (float64, erro
 		return 0, err
 	}
 	return brandVelocityAverage, nil
+}
+
+func (s *VehicleDefault) CreateVehicules(newVehicles []internal.Vehicle) error {
+	if err := s.rp.CreateVehicules(newVehicles); err != nil {
+		return err
+	}
+	return nil
 }

@@ -39,7 +39,7 @@ func (r *VehicleMap) FindByID(vehicleId int) (exist bool) {
 
 }
 
-func (r *VehicleMap) Create(newVehicle internal.Vehicle) error {
+func (r *VehicleMap) CreateVehicle(newVehicle internal.Vehicle) error {
 	carExists := r.FindByID(newVehicle.Id)
 	if carExists {
 		return internal.ErrCarAlreadyExists
@@ -100,5 +100,23 @@ func (r *VehicleMap) FindVelocityAverageByBrand(brand string) (float64, error) {
 	average /= totalCars
 
 	return average, nil
+
+}
+
+func (r *VehicleMap) CreateVehicules(newVehicles []internal.Vehicle) error {
+
+	// Validate if some id in new vehicules exist
+	for _, vehicle := range newVehicles {
+		if exist := r.FindByID(vehicle.Id); exist {
+			return internal.ErrCarAlreadyExists
+		}
+	}
+
+	// Add new vehicules to "db"
+	for _, vehicle := range newVehicles {
+		r.db[vehicle.Id] = vehicle
+	}
+
+	return nil
 
 }

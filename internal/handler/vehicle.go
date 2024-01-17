@@ -82,7 +82,7 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 	}
 }
 
-func (h *VehicleDefault) Create() http.HandlerFunc {
+func (h *VehicleDefault) CreateVehicle() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// request
 		bytes, err := io.ReadAll(r.Body)
@@ -110,7 +110,7 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 		}
 
 		// Error handling
-		if err := h.sv.Create(vehicle); err != nil {
+		if err := h.sv.CreateVehicle(vehicle); err != nil {
 			switch {
 			case errors.Is(err, internal.ErrInvalidBody):
 				response.Text(w, http.StatusBadRequest, err.Error())
@@ -218,9 +218,47 @@ func (h *VehicleDefault) FindVelocityAverageByBrand() http.HandlerFunc {
 	}
 }
 
-func validateIfKeysExist(mp map[string]any, keys ...string) error {
+func (h *VehicleDefault) CreateVehicles() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+		}
+
+		var vehicles []internal.Vehicle
+		if err := json.Unmarshal(bytes, &vehicles); err != nil {
+			response.Text(w, http.StatusBadRequest, "invalid body")
+			return
+		}
+
+		// Validación no funciona :(
+		//if err := validateAllVehiclesKeys(vehicles); err != nil {
+		//	response.Text(w, http.StatusBadRequest, "invalid body. Keys are missing")
+		//	return
+		//}
+
+		if err := h.sv.CreateVehicules(vehicles); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrInvalidBody):
+				response.Text(w, http.StatusBadRequest, err.Error())
+			case errors.Is(err, internal.ErrCarAlreadyExists):
+				response.Text(w, http.StatusConflict, err.Error())
+			}
+			return
+		}
+
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "Vehicules created successfully",
+			"data":    vehicles,
+		})
+
+	}
+}
+
+func validateIfKeysExist(data map[string]any, keys ...string) error {
 	for _, key := range keys {
-		if _, ok := mp[key]; !ok {
+		if _, ok := data[key]; !ok {
 			return internal.ErrInvalidBody
 		}
 	}
